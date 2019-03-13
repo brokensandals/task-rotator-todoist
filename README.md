@@ -1,5 +1,7 @@
 # Task Rotator for Todoist
 
+![docker build status](https://img.shields.io/docker/cloud/build/brokensandals/task-rotator-todoist.svg)
+
 This tool allows you to have recurring tasks in Todoist whose task name changes, according to a defined rotation, every time you complete the task.
 
 This tool is not created by, affiliated with, or supported by Doist.
