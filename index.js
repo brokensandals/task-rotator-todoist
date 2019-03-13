@@ -173,7 +173,7 @@ function buildTaskUpdateCommands(taskUpdates) {
 module.exports = async () => {
   const token = process.env.TODOIST_API_TOKEN;
   if (!token) {
-    console.log('Please set environment variable TODOIST_API_TOKEN');
+    throw 'Environment variable TODOIST_API_TOKEN not set';
   }
   
   const taskCompletions = await getTaskCompletions(token);
