@@ -1,5 +1,5 @@
 {
-  "name": "rotating-tasks-todoist",
+  "name": "task-rotator-todoist",
   "version": "1.0.0",
   "license": "MIT",
   "bin": {
