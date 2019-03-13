@@ -46,6 +46,12 @@ It's not practical or important for me to catch up on all three at once; rather,
 
 To be useful, you'll need to have this run automatically on a schedule (say, a couple times per day), but that's currently left as an exercise for the reader.
 
+## Running via Docker
+
+A docker image is available to make running the tool easier.
+
+`docker run -e 'TODOIST_API_TOKEN=your_token_here' brokensandals/task-rotator-todoist`
+
 ## How it Works
 
 Retrieves three data sets from the Todoist API:
