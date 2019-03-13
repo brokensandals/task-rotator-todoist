@@ -103,7 +103,7 @@ function filterTasksChangedSinceCompletion(taskCompletions, tasksById) {
     }
 
     if (task.content != content) {
-      console.log('Task ' + id + ' has had its contented changed from [' + content + '] to [' + task.content + '] since it was completed.');
+      console.log('Task ' + id + ' has had its content changed from [' + content + '] to [' + task.content + '] since it was completed.');
       return false;
     }
 
