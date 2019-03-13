@@ -1,0 +1,14 @@
+{
+  "name": "rotating-tasks-todoist",
+  "version": "1.0.0",
+  "license": "MIT",
+  "bin": {
+    "update-rotating-todoist-tasks": "bin/update-rotating-todoist-tasks"
+  },
+  "scripts": {},
+  "devDependencies": {},
+  "dependencies": {
+    "axios": "^0.18.0",
+    "uuid": "^3.3.2"
+  }
+}
