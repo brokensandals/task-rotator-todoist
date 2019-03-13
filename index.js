@@ -29,9 +29,27 @@ async function getTaskCompletions(token) {
   return result;
 }
 
+async function getTasksById(token) {
+  const url = 'https://todoist.com/api/v7/sync';
+  const params = {token: token, sync_token: '*', resource_types: '["items"]'};
+
+  const response = await axios.post(url, params);
+  if (response.status != 200) {
+    console.log('Unexpected response when retrieving items: ' + response);
+    throw 'Unable to retrieve items';
+  }
+
+  const tasksById = {};
+  response.data.items.forEach(item => {
+    tasksById[item.id] = item;
+  });
+
+  return tasksById;
+}
+
 async function getTaskRotationNotes(token) {
   const url = 'https://todoist.com/api/v7/sync';
-  const params = {token: token, sync_token: '*', resource_types: '["items","notes"]'};
+  const params = {token: token, sync_token: '*', resource_types: '["notes"]'};
 
   const response = await axios.post(url, params);
   if (response.status != 200) {
@@ -73,6 +91,23 @@ async function writeUpdates(token, commands) {
     if (status != 'ok') {
       console.log('An update failed: ' + status);
     }
+  });
+}
+
+function filterTasksChangedSinceCompletion(taskCompletions, tasksById) {
+  return taskCompletions.filter(({id, content}) => {
+    const task = tasksById[id];
+    if (!task) {
+      console.log('Found activity for ' + id + ' but no task with that ID');
+      return false;
+    }
+
+    if (task.content != content) {
+      console.log('Task ' + id + ' has had its contented changed from [' + content + '] to [' + task.content + '] since it was completed.');
+      return false;
+    }
+
+    return true;
   });
 }
 
@@ -142,8 +177,15 @@ module.exports = async () => {
   }
   
   const taskCompletions = await getTaskCompletions(token);
+  const tasksById = await getTasksById(token);
+  const filteredCompletions = filterTasksChangedSinceCompletion(taskCompletions, tasksById);
   const taskRotationNotes = await getTaskRotationNotes(token);
-  const taskUpdates = buildTaskUpdates(taskCompletions, taskRotationNotes);
-  const taskUpdateCommands = buildTaskUpdateCommands(taskUpdates);
-  writeUpdates(token, taskUpdateCommands);
+  const taskUpdates = buildTaskUpdates(filteredCompletions, taskRotationNotes);
+
+  if (taskUpdates.length > 0) {
+    console.log('Will perform updates:');
+    console.log(taskUpdates);
+    const taskUpdateCommands = buildTaskUpdateCommands(taskUpdates);
+    writeUpdates(token, taskUpdateCommands);
+  }
 }
