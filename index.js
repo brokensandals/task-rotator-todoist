@@ -2,7 +2,7 @@ const axios = require('axios');
 const uuidv4 = require('uuid/v4');
 
 async function getTaskCompletions(token) {
-  const url = 'https://todoist.com/api/v7/activity/get';
+  const url = 'https://todoist.com/api/v8/activity/get';
   const params = {token: token};
 
   const response = await axios.post(url, params);
@@ -13,7 +13,7 @@ async function getTaskCompletions(token) {
 
   const result = [];
   const idsSeen = new Set();
-  response.data.forEach(entry => {
+  response.data.events.forEach(entry => {
     if (entry.object_type != 'item' || entry.event_type != 'completed' || idsSeen.has(entry.object_id)) {
       return;
     }
@@ -30,7 +30,7 @@ async function getTaskCompletions(token) {
 }
 
 async function getTasksById(token) {
-  const url = 'https://todoist.com/api/v7/sync';
+  const url = 'https://todoist.com/api/v8/sync';
   const params = {token: token, sync_token: '*', resource_types: '["items"]'};
 
   const response = await axios.post(url, params);
@@ -48,7 +48,7 @@ async function getTasksById(token) {
 }
 
 async function getTaskRotationNotes(token) {
-  const url = 'https://todoist.com/api/v7/sync';
+  const url = 'https://todoist.com/api/v8/sync';
   const params = {token: token, sync_token: '*', resource_types: '["notes"]'};
 
   const response = await axios.post(url, params);
@@ -59,7 +59,7 @@ async function getTaskRotationNotes(token) {
 
   const rotationNotesByTaskId = {};
   response.data.notes.forEach(note => {
-    if (note.is_deleted || note.is_archived) {
+    if (note.is_deleted) {
       return;
     }
 
@@ -76,7 +76,7 @@ async function writeUpdates(token, commands) {
     return;
   }
 
-  const url = 'https://todoist.com/api/v7/sync';
+  const url = 'https://todoist.com/api/v8/sync';
   const params = {token: token, sync_token: '*', commands: JSON.stringify(commands)};
 
   const response = await axios.post(url, params);
