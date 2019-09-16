@@ -3,7 +3,7 @@ const uuidv4 = require('uuid/v4');
 
 async function getTaskCompletions(token) {
   const url = 'https://todoist.com/api/v8/activity/get';
-  const params = {token: token};
+  const params = {token: token, limit: 100};
 
   const response = await axios.post(url, params);
   if (response.status != 200) {
